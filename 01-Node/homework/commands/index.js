@@ -2,11 +2,11 @@ var fs = require('fs');
 var request = require('request');
 
 module.exports = {
-    pwd: function() {process.stdout.write(process.cwd())},
+    pwd: function(file, done) {done(process.cwd())},
 
-    date: function() {process.stdout.write(Date())},
+    date: function(file, done) {done(Date())},
     
-    echo: function (data){process.stdout.write(data.join(' '))},
+    echo: function (data,done){done(data.join(' '))},
     
     ls: function(file, done) {
         var output = "";

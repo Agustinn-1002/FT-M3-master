@@ -16,7 +16,8 @@ process.stdin.on('data', function (data) {
 
   if(commands[cmd]) {
     commands[cmd](argm,done)
+  }else{
+    done(cmd+" not found");
   }
-  process.stdout.write('\nprompt > ');
 });
 
