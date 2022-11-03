@@ -128,16 +128,13 @@ function problemC () {
   // );
 
   // promise version
-  for (let i = 1, p = promisifiedReadFile(filenames[0]); i <=filenames.length; i++) {
-    p = p.then((stanza)=> {
-        blue(stanza);
-        if (i===filenames.length) {
-          console.log('done')
-        }else{
-          return promisifiedReadFile(filenames[i])
-        }    
-    })
-  }
+  let promises = filenames.map(data => promisifiedReadFile(data)); //array de promesas
+
+  Promise.all(promises)
+    .then((stanzas) => {
+      stanzas.forEach((s)=> blue(s)) //iteramos por cada promesa un console.log
+      console.log('done')
+  })
 
 }
 
@@ -155,8 +152,7 @@ function problemD () {
   var filenames = [1, 2, 3, 4, 5, 6, 7, 8].map(function (n) {
     return 'poem-two/' + 'stanza-0' + n + '.txt';
   });
-  var randIdx = Math.floor(Math.random() * filenames.length);
-  filenames[randIdx] = 'wrong-file-name-' + (randIdx + 1) + '.txt';
+  
 
   // callback version
   // async.eachSeries(filenames,
@@ -175,23 +171,34 @@ function problemD () {
   // );
 
   // promise version
-  for (let i = 1, p = promisifiedReadFile(filenames[0]); i <=filenames.length; i++) {
-    p = p.then((stanza)=> {
-        blue(stanza);
-        if (i===filenames.length) {
-          console.log('done')
-        }else{
-          return promisifiedReadFile(filenames[i])
-        }    
-    })
-    if (i===filenames.length) {
-      p.catch(err=>{
-        magenta(new Error(err))
-        console.log('done')
-      })
-    }
+  // for (let i = 1, p = promisifiedReadFile(filenames[0]); i <=filenames.length; i++) {
+  //   p = p.then((stanza)=> {
+  //       blue(stanza);
+  //       if (i===filenames.length) {
+  //         console.log('done')
+  //       }else{
+  //         return promisifiedReadFile(filenames[i])
+  //       }    
+  //   })
+  //   if (i===filenames.length) {
+  //     p.catch(err=>{
+  //       magenta(new Error(err))
+  //       console.log('done')
+  //     })
+  //   }
     
-  }
+  // }
+  let promises = filenames.map(data => promisifiedReadFile(data)); //array de promesas
+
+  Promise.all(promises)
+    .then((stanzas) => {
+      stanzas.forEach((s)=> blue(s)) //iteramos por cada promesa un console.log
+      console.log('Promises -- D -- done')
+    })
+    .catch((err) =>{
+      magenta(new Error(err))
+      console.log('Promises -- D -- done')
+    })
 
 }
 
@@ -211,4 +218,10 @@ function problemE () {
       })
     })
   }
+
+  promisifiedWriteFile('poem-one/stanza-01.txt', 'string agregado desde la nueva promesa')
+    .then((e) => console.log(e))
+    .catch(err => console.log(err))
 }
+
+problemE ()
