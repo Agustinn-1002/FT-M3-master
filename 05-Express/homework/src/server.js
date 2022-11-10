@@ -57,5 +57,15 @@ server.get('/posts/:author',(req,res)=>{
     if(!postByAuthor.length) return res.status(STATUS_USER_ERROR).json({error: "No existe ningun post del autor indicado"}) 
     res.json(postByAuthor)
 })
+server.get('/posts/:author/:title',(req,res)=>{
+    const {author,title} = req.params;
+    const getAuthor = posts.filter(p => p.author === author && p.title === title)
+    if (!getAuthor.length) return res.status(STATUS_USER_ERROR).json({error: "No existe ningun post con dicho titulo y autor indicado"});
+    res.json(getAuthor)
+})
 
+server.put('/posts',(req,res)=>{
+    const { id, title , contents} = req.body;
+    if (!id || !title || !contents) return res.status(STATUS_USER_ERROR).json({error: "No se recibieron los parámetros necesarios para modificar el Post"});
+})
 module.exports = { posts, server };
