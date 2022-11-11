@@ -5,7 +5,7 @@ const STATUS_USER_ERROR = 422;
 
 // This array of posts persists in memory across requests. Feel free
 // to change this to a let binding if you need to reassign it.
-const posts = [];
+let posts = [];
 
 const server = express();
 // to enable parsing of json bodies for post requests
@@ -67,5 +67,30 @@ server.get('/posts/:author/:title',(req,res)=>{
 server.put('/posts',(req,res)=>{
     const { id, title , contents} = req.body;
     if (!id || !title || !contents) return res.status(STATUS_USER_ERROR).json({error: "No se recibieron los parámetros necesarios para modificar el Post"});
+    const postId = posts.find(p => p.id===id);
+    if (!postId) return res.status(STATUS_USER_ERROR).json({error:'el `id` indicado no corresponde con un Post existente'})
+    postId.title = title;
+    postId.contents = contents;
+    res.json(postId)
 })
+
+server.delete('/posts',(req,res)=>{
+    const {id} = req.body;
+    if (!id) return res.status(STATUS_USER_ERROR).json({error: "No se recibio un ID"})
+    const postId = posts.find(p => p.id===id);
+    if (!postId) return res.status(STATUS_USER_ERROR).json({error: "No existe post con ese ID"})
+    posts = posts.filter(p => p.id!==id)
+    res.json({ success: true })
+})
+
+server.delete('/author',(req,res)=>{
+    const {author} = req.body;
+    if (!author) return res.status(STATUS_USER_ERROR).json({error: "No se recibio un autor"})
+
+    const postEliminado = posts.filter(p => p.author === author)
+    if (!postEliminado.length) return res.status(STATUS_USER_ERROR).json({error: "No existe el autor indicado"})
+    posts = posts.filter(p => p.author!==author);
+    res.json(postEliminado)
+})
+
 module.exports = { posts, server };
